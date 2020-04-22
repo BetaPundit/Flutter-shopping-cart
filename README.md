@@ -1,6 +1,16 @@
-# shopping_cart
+# Flutter Shopping Cart
 
-A new Flutter project.
+A simple shopping cart implemented using the [provider package](https://pub.dev/packages/provider).
+
+## Run
+To run, clone this repository
+```
+git clone https://github.com/BetaPundit/Flutter-shopping-cart.git
+```
+And execute:
+```
+flutter run
+```
 
 ## Getting Started
 
