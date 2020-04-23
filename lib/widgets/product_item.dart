@@ -28,6 +28,10 @@ class ProductItem extends StatelessWidget {
               .pushNamed(ProductDetailScreen.routeName, arguments: product.id);
         },
         child: GridTile(
+          child: Image.network(
+            product.imageUrl,
+            fit: BoxFit.cover,
+          ),
           footer: GridTileBar(
             backgroundColor: Colors.black87,
             leading: Consumer<Product>(
@@ -54,12 +58,21 @@ class ProductItem extends StatelessWidget {
                   product.price,
                   product.title,
                 );
+                Scaffold.of(context).hideCurrentSnackBar();
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Added item to cart!'),
+                    duration: Duration(seconds: 2),
+                    action: SnackBarAction(
+                      label: 'UNDO',
+                      onPressed: () {
+                        cart.removeSingleItem(product.id);
+                      },
+                    ),
+                  ),
+                );
               },
             ),
-          ),
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
           ),
         ),
       ),
