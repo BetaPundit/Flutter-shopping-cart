@@ -15,7 +15,6 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Your cart'),
       ),
-      drawer: AppDrawer(),
       body: Column(
         children: [
           Card(
