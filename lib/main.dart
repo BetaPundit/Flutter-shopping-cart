@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Shopping Cart',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           accentColor: Colors.deepOrange,
