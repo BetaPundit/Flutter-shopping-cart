@@ -16,6 +16,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _imageUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
 
+  var _isInit = true;
+  var _initValues = {
+    'title': '',
+    'price': '',
+    'description': '',
+    'imageUrl': '',
+  };
+
   var _newProduct = Product(
     id: null,
     title: '',
@@ -27,7 +35,29 @@ class _EditProductScreenState extends State<EditProductScreen> {
   @override
   void initState() {
     _imageUrlFocusNode.addListener(_updateImageUrl);
+
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final String productId =
+          ModalRoute.of(context).settings.arguments as String;
+
+      if (productId != null) {
+        _newProduct = Provider.of<Products>(context).findById(productId);
+        _initValues = {
+          'title': _newProduct.title,
+          'price': _newProduct.price.toString(),
+          'description': _newProduct.description,
+          'imageUrl': '',
+        };
+        _imageUrlController.text = _newProduct.imageUrl;
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
   }
 
   @override
@@ -53,7 +83,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _form.currentState.save();
-    Provider.of<Products>(context, listen: false).addProduct(_newProduct);
+
+    if (_newProduct.id != null) {
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_newProduct.id, _newProduct);
+    } else {
+      Provider.of<Products>(context, listen: false).addProduct(_newProduct);
+    }
     Navigator.of(context).pop();
   }
 
@@ -78,6 +114,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               TextFormField(
                 decoration: InputDecoration(labelText: 'Title'),
                 textInputAction: TextInputAction.next,
+                initialValue: _initValues['title'],
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
                 },
@@ -95,12 +132,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     description: _newProduct.description,
                     imageUrl: _newProduct.imageUrl,
                     id: _newProduct.id,
+                    isFavourite: _newProduct.isFavourite,
                   );
                 },
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Prcie'),
                 textInputAction: TextInputAction.next,
+                initialValue: _initValues['price'],
                 keyboardType: TextInputType.number,
                 focusNode: _priceFocusNode,
                 onFieldSubmitted: (_) {
@@ -125,10 +164,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     description: _newProduct.description,
                     imageUrl: _newProduct.imageUrl,
                     id: _newProduct.id,
+                    isFavourite: _newProduct.isFavourite,
                   );
                 },
               ),
               TextFormField(
+                initialValue: _initValues['description'],
                 decoration: InputDecoration(labelText: 'Description'),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
@@ -149,6 +190,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     description: value,
                     imageUrl: _newProduct.imageUrl,
                     id: _newProduct.id,
+                    isFavourite: _newProduct.isFavourite,
                   );
                 },
               ),
@@ -203,6 +245,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           description: _newProduct.description,
                           imageUrl: value,
                           id: _newProduct.id,
+                          isFavourite: _newProduct.isFavourite,
                         );
                       },
                     ),
