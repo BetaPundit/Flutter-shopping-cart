@@ -85,7 +85,7 @@ class Products with ChangeNotifier {
         body: json.encode({
           'title': product.title,
           'price': product.price,
-          'descripton': product.description,
+          'description': product.description,
           'imageUrl': product.imageUrl,
           'isFavourite': product.isFavourite,
         }),
@@ -110,13 +110,33 @@ class Products with ChangeNotifier {
     return _items.firstWhere((product) => product.id == id);
   }
 
-  void updateProduct(String id, Product newProduct) {
+  Future<void> updateProduct(String id, Product newProduct) async {
+    final url =
+        'https://flutter-shopping-cart-demo.firebaseio.com/products/$id.json';
+
     final prodIndex = _items.indexWhere((product) => product.id == id);
-    _items[prodIndex] = newProduct;
-    notifyListeners();
+
+    if (prodIndex >= 0) {
+      await http.patch(url,
+          body: json.encode({
+            'title': newProduct.title,
+            'price': newProduct.price,
+            'description': newProduct.description,
+            'imageUrl': newProduct.imageUrl,
+          }));
+      _items[prodIndex] = newProduct;
+      notifyListeners();
+    } else {
+      print('...');
+    }
   }
 
   void deleteProduct(String id) {
+    final url =
+        'https://flutter-shopping-cart-demo.firebaseio.com/products/$id.json';
+
+    http.delete(url);
+
     _items.removeWhere((product) => product.id == id);
     notifyListeners();
   }
