@@ -118,13 +118,15 @@ class Products with ChangeNotifier {
     final prodIndex = _items.indexWhere((product) => product.id == id);
 
     if (prodIndex >= 0) {
-      await http.patch(url,
-          body: json.encode({
-            'title': newProduct.title,
-            'price': newProduct.price,
-            'description': newProduct.description,
-            'imageUrl': newProduct.imageUrl,
-          }));
+      await http.patch(
+        url,
+        body: json.encode({
+          'title': newProduct.title,
+          'price': newProduct.price,
+          'description': newProduct.description,
+          'imageUrl': newProduct.imageUrl,
+        }),
+      );
       _items[prodIndex] = newProduct;
       notifyListeners();
     } else {
