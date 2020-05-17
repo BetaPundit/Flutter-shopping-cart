@@ -20,9 +20,9 @@ class Product with ChangeNotifier {
     this.isFavourite = false,
   });
 
-  Future<void> toggleFavourite(String token) async {
+  Future<void> toggleFavourite(String token, String userId) async {
     final url =
-        'https://flutter-shopping-cart-demo.firebaseio.com/products/$id.json?auth=$token';
+        'https://flutter-shopping-cart-demo.firebaseio.com/userFavourites/$userId/$id.json?auth=$token';
     final oldStatus = isFavourite;
     isFavourite = !isFavourite;
     notifyListeners();
@@ -30,10 +30,10 @@ class Product with ChangeNotifier {
     // http patch, put, delete does not return any error so
     // manually throwing error when statusCode >= 400
     try {
-      final response = await http.patch(
+      final response = await http.put(
         url,
         body: json.encode(
-          {'isFavourite': isFavourite},
+          isFavourite,
         ),
       );
       if (response.statusCode >= 400) {
