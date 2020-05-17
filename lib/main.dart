@@ -11,6 +11,7 @@ import 'package:shopping_cart/screens/orders_screen.dart';
 import 'package:shopping_cart/screens/product_detail_screen.dart';
 import 'package:shopping_cart/screens/product_overview_screen.dart';
 import 'package:shopping_cart/providers/products.dart';
+import 'package:shopping_cart/screens/splash_screen.dart';
 import 'package:shopping_cart/screens/user_products_screen.dart';
 
 void main() {
@@ -49,7 +50,15 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Lato',
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          home: auth.isAuth ? ProductOverviewScreen() : AuthScreen(),
+          home: auth.isAuth
+              ? ProductOverviewScreen()
+              : FutureBuilder<bool>(
+                  future: auth.tryAutoLogin(),
+                  builder: (context, snapshot) =>
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? SplashScreen()
+                          : AuthScreen(),
+                ),
           routes: {
             ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
             CartScreen.routeName: (context) => CartScreen(),
